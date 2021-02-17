@@ -4,8 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu]
 
-public class IntData : scriptableObject
+public class IntData : MonoBehaviour
 {
-  public int value;
-  
+    public int value;
 }
