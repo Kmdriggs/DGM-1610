@@ -27,7 +27,7 @@ public class LoopBehavior : MonoBehaviour
 
         foreach (var weapon in weapons)
         {
-            print("You have my " + weapon.name);
+            print("You have my " + weapon.name + ", with a value of " + weapon.powerLevel);
         }
 
         
