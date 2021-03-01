@@ -8,21 +8,19 @@ public class AnotherClass : MonoBehaviour
     public int oranges;
 
     private int stapler;
-    private int sellotape;
-
+    private int tape;
 
     public void FruitMachine (int a, int b)
     {
         int answer;
         answer = a + b;
-        Debug.Log("Total Fruit: " + answer);
+        Debug.Log("Fruit total: " + answer);
     }
 
-
-    private void OfficeSort (int a, int b)
+    private void OfficeSupplies (int a, int b)
     {
         int answer;
         answer = a + b;
-        Debug.Log("Total Office Supplies: " + answer);
+        Debug.Log("Office Supplies total: " + answer);
     }
 }
