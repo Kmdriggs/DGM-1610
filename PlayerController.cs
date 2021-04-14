@@ -4,54 +4,33 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private float speed = 10.0f;
     private Rigidbody playerRb;
-    private Animator playerAnim;
-    public ParticleSystem explosionParticle;
-    public ParticleSystem dirtParticle;
-    public AudioClip jumpSound;
-    public AudioClip crashSound;
-    private AudioSource playerAudio;
-    public float jumpForce;
-    public float gravityModifier;
-    public bool isOnGround = true;
-    public bool gameOver = false;
+    private float zBound = 6;
 
+    // Start is called before the first frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
-        playerAnim = GetComponent<Animator>();
-        Physics.gravity *= gravityModifier;
-        playerAudio = GetComponent<AudioSource>();
     }
 
+    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver)
-        {
-            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isOnGround = false;
-            playerAnim.SetTrigger("Jump_trig");
-            dirtParticle.Stop();
-            playerAudio.PlayOneShot(jumpSound, 1.0f);
-        }
-    }
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
+        playerRb.AddForce(Vector3.forward * speed * verticalInput);
+        playerRb.AddForce(Vector3.right * speed * horizontalInput);
+
+        if (transform.position.z < -zBound)
         {
-            isOnGround = true;
-            dirtParticle.Play();
+            transform.position = new Vector3(transform.position.x, transform.position.y, -zBound);
         }
-        else if (collision.gameObject.CompareTag("Obstacle"))
+
+        if (transform.position.z > zBound)
         {
-            gameOver = true;
-            Debug.Log("Game Over!");
-            playerAnim.SetBool("Death_b", true);
-            playerAnim.SetInteger("DeathType_int", 1);
-            explosionParticle.Play();
-            dirtParticle.Stop();
-            playerAudio.PlayOneShot(crashSound, 1.0f);
+            transform.position = new Vector3(transform.position.x, transform.position.y, zBound);
         }
     }
 }
