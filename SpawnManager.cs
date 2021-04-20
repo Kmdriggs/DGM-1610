@@ -4,48 +4,47 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject enemyPrefab;
-    public GameObject powerupPrefab;
-    public int enemyCount;
-    public int waveNumber = 1;
-    private float spawnRange = 9;
+    public GameObject[] enemies;
+    public GameObject powerup;
+
+    private float zEnemySpawn = 12.0f;
+    private float xSpawnRange = 16.0f;
+    private float zPowerRange = 5.0f;
+    private float ySpawn = 0.75f;
+
+    private float powerSpawnTime = 5.0f;
+    private float enemySpawnTime = 1.0f;
+    private float startDelay = 1.0f;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        SpawnEnemyWave(waveNumber);
-        Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
+        InvokeRepeating("SpawnRandomEnemy", startDelay, enemySpawnTime);
+        InvokeRepeating("SpawnPower", startDelay, powerSpawnTime);
     }
 
     // Update is called once per frame
     void Update()
     {
-        enemyCount = FindObjectsOfType<Enemy>().Length;
-        if (enemyCount == 0)
-        {
-            waveNumber++;
-            SpawnEnemyWave(waveNumber);
-            Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
-        }
+        
     }
 
-    void SpawnEnemyWave(int enemiesToSpawn)
+    void SpawnRandomEnemy()
     {
-        for (int i =0; i < enemiesToSpawn; i++)
-        {
-            Instantiate(enemyPrefab, GenerateSpawnPosition(), enemyPrefab.transform.rotation);
-        }
+        float randomX = Random.Range(-xSpawnRange, xSpawnRange);
+        int randomIndex = Random.Range(0, enemies.Length);
+        Vector3 spawnPos = new Vector3(randomX, ySpawn, zEnemySpawn);
+
+        Instantiate(enemies[randomIndex], spawnPos, enemies[randomIndex].gameObject.transform.rotation);
     }
 
-    private Vector3 GenerateSpawnPosition()
+    void SpawnPower()
     {
-        float spawnPosX = Random.Range(-spawnRange, spawnRange);
-        float spawnPosZ = Random.Range(-spawnRange, spawnRange);
+        float randomX = Random.Range(-xSpawnRange, xSpawnRange);
+        float randomZ = Random.Range(-zPowerRange, zPowerRange);
+        Vector3 spawnPos = new Vector3(randomX, ySpawn, randomZ);
 
-        Vector3 randomPos = new Vector3(spawnPosX, 0, spawnPosZ);
-
-        return randomPos;
+        Instantiate(powerup, spawnPos, powerup.gameObject.transform.rotation);
     }
-
 }
