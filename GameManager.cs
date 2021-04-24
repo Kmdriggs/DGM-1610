@@ -5,18 +5,28 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> targets;
-    public GameObject[] targets2;
     private float spawnRate = 1.0f;
-    
+    private int score;
+    public TextMeshProUGUI scoreText;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(SpawnTarget());
+        StartCoroutine(spawnTarget());
+        score = 0;
+        scoreText.text = "Score: " + score;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     IEnumerator SpawnTarget()
     {
-        while (true)
+        while(true)
         {
             yield return new WaitForSeconds(spawnRate);
             int index = Random.Range(0, targets.Count);
@@ -24,19 +34,5 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    private void OnMouseDown()
-    {
-        Destroy(gameObject);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        Destroy(gameObject);
-    }
 }
