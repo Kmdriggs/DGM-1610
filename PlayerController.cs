@@ -51,16 +51,11 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Game Over");
         }
-
-        if(collision.gameObject.CompareTag("Trap"))
-        {
-            Debug.Log("You've been caught! Game Over");
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Cheese"))
+        if(other.gameObject.CompareTag("Point"))
         {
             Destroy(other.gameObject);
         }
