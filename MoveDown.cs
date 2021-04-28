@@ -5,10 +5,8 @@ using UnityEngine;
 public class MoveDown : MonoBehaviour
 {
     private Rigidbody objectRb;
-
-    public float speed = 10.0f;
-    private float zDestroy = -20.0f;
-
+    public float speed = 5.0f;
+    private float zDestroy = -15.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +23,5 @@ public class MoveDown : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
     }
 }
