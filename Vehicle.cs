@@ -4,20 +4,27 @@ using UnityEngine;
 
 public class Vehicle : MonoBehaviour
 {
-    [SerializeField] protected const float speed = 20.0f;
-    [SerializeField] private float turnSpeed = 45.0f;
+    //[SerializeField] protected const float speed = 20.0f;
+    [SerializeField] private const float turnSpeed = 45.0f;
+    public float horsePower = 1;
+    private Rigidbody playerRb;
     private float horizontalInput;
-    private float forwardInput;
+    private float verticalInput;
+
+    void Start()
+    {
+        playerRb = GetComponent<Rigidbody>();
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         //moves car forward based on vertical input
         horizontalInput = Input.GetAxis("Horizontal");
-        forwardInput = Input.GetAxis("Vertical");
+        verticalInput = Input.GetAxis("Vertical");
 
         //roates car based on horizontal input
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
+        playerRb.AddRelativeForce(Vector3.forward * verticalInput * horsePower);
         transform.Rotate(Vector3.up, turnSpeed * horizontalInput * Time.deltaTime);
     }
 }
