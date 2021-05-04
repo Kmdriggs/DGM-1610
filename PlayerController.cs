@@ -1,18 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    private GameManager gameManager;
+    public float movementSpeed = 10.0f;
     private Rigidbody playerRb;
-    private float speed = 10.0f;
+    public KeepScore KeepScore;
+    public SpawnManager SpawnManager;
+
+    public bool isGameActive;
+
+    public TextMeshProUGUI gameOverText;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         playerRb = GetComponent<Rigidbody>();
+        isGameActive = true;
     }
 
     // Update is called once per frame
@@ -24,15 +30,24 @@ public class PlayerController : MonoBehaviour
     //player movement
     void playerMovement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        playerRb.AddForce(Vector3.right * speed * horizontalInput);
+        if(SpawnManager.isGameActive)
+        {
+            if (Input.GetKey (KeyCode.LeftShift))
+            {
+                transform.position += transform.TransformDirection (Vector3.left) * Time.deltaTime * movementSpeed;
+            }
+            else if (Input.GetKey (KeyCode.RightShift))
+            {
+                transform.position += transform.TransformDirection (Vector3.right) * Time.deltaTime * movementSpeed;
+            }
+        }
     }
 
     private void onCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Enemy"))
         {
+            SpawnManager.GameOver();
             Debug.Log("Game Over");
         }
     }
@@ -42,8 +57,8 @@ public class PlayerController : MonoBehaviour
         if(other.gameObject.CompareTag("Point"))
         {
             Destroy(other.gameObject);
+            KeepScore.UpdateScore(5);
         }
-
-        gameManager.UpdateScore(5);
     }
+
 }
