@@ -1,64 +1,68 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float movementSpeed = 10.0f;
-    private Rigidbody playerRb;
-    public KeepScore KeepScore;
-    public SpawnManager SpawnManager;
-
-    public bool isGameActive;
+    private float horizontalInput;
+    private float speed = 20.0f;
+    private float xRange = 20;
+    public GameObject projectilePrefab;
+    public Button restartButton;
+    public Button startButton;
 
     public TextMeshProUGUI gameOverText;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        playerRb = GetComponent<Rigidbody>();
-        isGameActive = true;
-    }
 
     // Update is called once per frame
     void Update()
     {
-        playerMovement();
-    }
+        PlayerMovement();
 
-    //player movement
-    void playerMovement()
-    {
-        if(SpawnManager.isGameActive)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (Input.GetKey (KeyCode.LeftShift))
-            {
-                transform.position += transform.TransformDirection (Vector3.left) * Time.deltaTime * movementSpeed;
-            }
-            else if (Input.GetKey (KeyCode.RightShift))
-            {
-                transform.position += transform.TransformDirection (Vector3.right) * Time.deltaTime * movementSpeed;
-            }
+            Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
         }
     }
 
-    private void onCollisionEnter(Collision collision)
+    private void PlayerMovement()
     {
-        if(collision.gameObject.CompareTag("Enemy"))
+        // Check for left and right bounds
+        if (transform.position.x < -xRange)
         {
-            SpawnManager.GameOver();
-            Debug.Log("Game Over");
+            transform.position = new Vector3(-xRange, transform.position.y, transform.position.z);
         }
+
+        if (transform.position.x > xRange)
+        {
+            transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
+        }
+
+        // Player movement left to right
+        horizontalInput = Input.GetAxis("Horizontal");
+        transform.Translate(Vector3.right * Time.deltaTime * speed * horizontalInput);
+    }
+
+
+    private void GameOver()
+    {
+        gameOverText.gameObject.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Point"))
+        if (!gameObject.CompareTag("Bad"))
         {
-            Destroy(other.gameObject);
-            KeepScore.UpdateScore(5);
+            GameOver();
+            restartButton.gameObject.SetActive(true);
         }
     }
 
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
